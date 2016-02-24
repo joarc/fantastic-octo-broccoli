@@ -46,8 +46,31 @@ else
 fi
 echo "Load 1m: $loadf, Load 5m: $loads, Load 15m: $loadt"
 echo "CPU Amount: $cpus"
-echo ""
-## Harddrive
-harddrives=$(df -h)
-echo 
 echo ""; echo ""
+
+## Harddrive
+echo "-[ Harddrive ]-"
+echo ""
+df -h > harddrives.log
+while read p; do
+  file=$(echo $p |cut -d' ' -f1)
+  size=$(echo $p |cut -d' ' -f2)
+  used=$(echo $p |cut -d' ' -f3)
+  avai=$(echo $p |cut -d' ' -f4)
+  usag=$(echo $p |cut -d' ' -f5)
+  moun=$(echo $p |cut -d' ' -f6)
+  if [[ $moun != /run* ]] && [[ $moun != /sys* ]] && [[ $moun != /dev* ]]; then
+    echo "$moun	| $used/$size ($avai, $usag) | $file"
+  fi
+done <harddrives.log
+echo ""; echo ""
+
+
+## Network
+echo "-[ Networking ]-"
+echo ""
+echo "ping -c10 8.8.8.8"
+ping -c10 8.8.8.8
+echo ""
+echo "Interfaces and their ips:"
+/sbin/ifconfig |grep -B1 "inet addr" |awk '{ if ( $1 == "inet" ) { print $2 } else if ( $2 == "Link" ) { printf "%s:" ,$1 } }' |awk -F: '{ print $1 ": " $3 }'
