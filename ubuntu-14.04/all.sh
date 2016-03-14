@@ -74,3 +74,25 @@ ping -c10 8.8.8.8
 echo ""
 echo "Interfaces and their ips:"
 /sbin/ifconfig |grep -B1 "inet addr" |awk '{ if ( $1 == "inet" ) { print $2 } else if ( $2 == "Link" ) { printf "%s:" ,$1 } }' |awk -F: '{ print $1 ": " $3 }'
+echo ""; echo ""
+
+## Get RAM usage
+echo "-[ RAM ]-"
+echo ""
+free -m
+echo ""; echo ""
+
+## IO
+echo "-[ IO ]-"
+echo ""
+iostat -d -x 1 5
+echo ""; echo ""
+
+## Packets
+echo "-[ Packets ]-"
+echo ""
+netstat -s | grep retransmited
+echo "";
+echo "---------------"
+echo " END OF UPDATE"
+echo "---------------"
